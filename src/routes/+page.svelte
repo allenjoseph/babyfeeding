@@ -56,7 +56,7 @@
 
   async function onRefreshFeedingdata() {
     refreshLoading = true;
-    await refreshFeedingdata();
+    await loadFeedingData();
     refreshLoading = false;
   }
 
@@ -105,13 +105,14 @@
         </ButtonFeeding>
       {/if}
       <button
+        type="button"
         class="btn absolute right-6 bottom-6 btn-circle btn-outline btn-secondary"
         aria-label="Refresh Icon Button"
         onclick={onRefreshFeedingdata}
         disabled={refreshLoading}
       >
-        <span class={['icon-[tabler--refresh] size-6 shrink-0', refreshLoading && 'animate-spin']}
-        ></span>
+        <span class={['icon-[tabler--refresh] size-6 shrink-0', refreshLoading && 'animate-spin']}>
+        </span>
       </button>
     </div>
   </div>
