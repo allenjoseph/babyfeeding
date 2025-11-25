@@ -16,6 +16,7 @@
   import ButtonFeeding from '$lib/components/ButtonFeeding.svelte';
   import ProgressFeeding from '$lib/components/ProgressFeeding.svelte';
 
+  let refreshLoading = $state(false);
   let feedingType = $state<FeedingType>('breastmilk');
   let feedingGroupByDay = $derived(
     Object.groupBy(app.feedingData ?? [], (i) => dayjs(i.start).format('YYYY-MM-DD'))
@@ -51,6 +52,12 @@
 
     resetTimer();
     feedingLoading = false;
+  }
+
+  async function onRefreshFeedingdata() {
+    refreshLoading = true;
+    await refreshFeedingdata();
+    refreshLoading = false;
   }
 
   $effect(() => {
@@ -100,9 +107,11 @@
       <button
         class="btn absolute right-6 bottom-6 btn-circle btn-outline btn-secondary"
         aria-label="Refresh Icon Button"
-        onclick={refreshFeedingdata}
+        onclick={onRefreshFeedingdata}
+        disabled={refreshLoading}
       >
-        <span class="icon-[tabler--refresh] size-6 shrink-0"></span>
+        <span class={['icon-[tabler--refresh] size-6 shrink-0', refreshLoading && 'animate-spin']}
+        ></span>
       </button>
     </div>
   </div>
