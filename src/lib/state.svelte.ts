@@ -37,6 +37,7 @@ export function resetTimer() {
 }
 
 export function startTimer(startDate: Date) {
+  clearTimeout(app.timerId);
   app.timer = dayjs().startOf('day').add(dayjs().diff(startDate, 'second'), 'second');
   app.timerId = setInterval(() => {
     app.timer = app.timer.add(1, 'second');
