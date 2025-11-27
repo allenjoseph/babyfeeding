@@ -2,13 +2,7 @@
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import { addFeedingItem, updateFeedingItem } from '$lib/firestore';
-  import {
-    app,
-    loadFeedingData,
-    refreshFeedingdata,
-    resetTimer,
-    startTimer
-  } from '$lib/state.svelte';
+  import { app, refreshFeedingdata, resetTimer } from '$lib/state.svelte';
   import { getUser, validateSignInResult } from '$lib/auth';
   import type { FeedingType } from '$lib/types';
   import FormLogin from '$lib/components/FormLogin.svelte';
@@ -17,7 +11,7 @@
   import ProgressFeeding from '$lib/components/ProgressFeeding.svelte';
 
   let refreshLoading = $state(false);
-  let feedingType = $state<FeedingType>('breastmilk');
+  let feedingType = $derived<FeedingType>(app.currentFeeding?.type ?? 'breastmilk');
   let feedingGroupByDay = $derived(
     Object.groupBy(app.feedingData ?? [], (i) => dayjs(i.start).format('YYYY-MM-DD'))
   );
@@ -56,20 +50,14 @@
 
   async function onRefreshFeedingdata() {
     refreshLoading = true;
-    await loadFeedingData();
+    await refreshFeedingdata();
     refreshLoading = false;
   }
-
-  $effect(() => {
-    if (app.currentFeeding?.start) {
-      startTimer(app.currentFeeding.start);
-    }
-  });
 
   onMount(async () => {
     app.user = getUser() ?? (await validateSignInResult());
     if (app.user) {
-      await loadFeedingData();
+      await refreshFeedingdata();
     }
   });
 </script>

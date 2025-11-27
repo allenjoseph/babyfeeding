@@ -13,7 +13,7 @@ export default defineConfig({
       cert: readFileSync('certs/localhost.crt')
     },
     proxy: {
-      '/__/auth': {
+      '/__': {
         target: 'https://baby-feeding--firebase.web.app',
         changeOrigin: true
       }

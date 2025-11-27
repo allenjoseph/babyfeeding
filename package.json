@@ -13,7 +13,8 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "fb": "firebase",
-    "fb:deploy": "firebase deploy --only hosting"
+    "fb:deploy": "firebase deploy --only hosting",
+    "cert": "npx -y mkcert-cli --outDir certs --cert localhost.crt --key localhost.key"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",

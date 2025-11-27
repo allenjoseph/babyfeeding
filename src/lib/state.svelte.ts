@@ -10,22 +10,19 @@ export const app = $state<AppState>({
   timer: dayjs().startOf('day')
 });
 
-export async function loadFeedingData() {
+export async function refreshFeedingdata() {
   app.feedingData = await fetchFeedingData();
 
   const feedingInProgress = app.feedingData.find((i) => !i.end);
   if (feedingInProgress) {
     app.currentFeeding = feedingInProgress;
     localStorage.setItem('baby-feeding-current-feeding', JSON.stringify(app.currentFeeding));
+    startTimer(app.currentFeeding.start);
   }
 }
 
-export async function refreshFeedingdata() {
-  app.feedingData = await fetchFeedingData();
-}
-
 async function fetchFeedingData() {
-  const from = dayjs().subtract(1, 'week').toDate(); // one week ago
+  const from = dayjs().subtract(3, 'day').toDate(); // one week ago
   const to = dayjs().toDate(); // today
   return queryFeedingItems(from, to);
 }
@@ -37,7 +34,7 @@ export function resetTimer() {
 }
 
 export function startTimer(startDate: Date) {
-  clearTimeout(app.timerId);
+  clearInterval(app.timerId);
   app.timer = dayjs().startOf('day').add(dayjs().diff(startDate, 'second'), 'second');
   app.timerId = setInterval(() => {
     app.timer = app.timer.add(1, 'second');
