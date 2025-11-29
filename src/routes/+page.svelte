@@ -4,19 +4,22 @@
   import { addFeedingItem, updateFeedingItem } from '$lib/firestore';
   import { app, refreshFeedingdata, resetTimer } from '$lib/state.svelte';
   import { getUser, validateSignInResult } from '$lib/auth';
-  import type { FeedingType } from '$lib/types';
+  import type { FeedingItem, FeedingType } from '$lib/types';
   import FormLogin from '$lib/components/FormLogin.svelte';
   import InputFeedingType from '$lib/components/InputFeedingType.svelte';
   import ButtonFeeding from '$lib/components/ButtonFeeding.svelte';
   import ProgressFeeding from '$lib/components/ProgressFeeding.svelte';
+  import RangeDateSlider from '$lib/components/RangeDateSlider.svelte';
 
   let refreshLoading = $state(false);
+  let updateLoading = $state(false);
   let feedingType = $derived<FeedingType>(app.currentFeeding?.type ?? 'breastmilk');
   let feedingGroupByDay = $derived(
     Object.groupBy(app.feedingData ?? [], (i) => dayjs(i.start).format('YYYY-MM-DD'))
   );
   let feedingLoading = $derived(app.feedingData === null);
   let authLoading = $derived(app.user === null);
+  let selected = $state<FeedingItem>();
 
   async function onStartFeeding() {
     feedingLoading = true;
@@ -52,6 +55,21 @@
     refreshLoading = true;
     await refreshFeedingdata();
     refreshLoading = false;
+  }
+
+  function onUpdateSelected([start, end]: number[]) {
+    if (!selected) return;
+    selected.start = dayjs(start).toDate();
+    selected.end = dayjs(end).toDate();
+  }
+
+  async function onSaveChanges(current: FeedingItem, changes: FeedingItem) {
+    if (!changes || JSON.stringify(changes) === JSON.stringify(current)) return;
+    updateLoading = true;
+    await updateFeedingItem({ ...changes });
+    await onRefreshFeedingdata();
+    updateLoading = false;
+    selected = undefined;
   }
 
   onMount(async () => {
@@ -137,8 +155,8 @@
               </span>
             </div>
             <div class="timeline-end m-3 ms-2 w-full rounded-lg">
-              <div class="mb-2 pt-0.5 font-medium text-base-content">
-                <p class="leading-4">
+              <div class="mb-2 flex pt-0.5 font-medium text-base-content">
+                <p class="flex-1 leading-4">
                   {#if feeding.end}
                     {dayjs(feeding.end).diff(feeding.start, 'minute')} minutes of {feeding.type}.
                   {:else}
@@ -148,12 +166,45 @@
                   <br />
                   <span class="text-xs text-gray-300">{feeding.id}</span>
                 </p>
+                {#if feeding.id === selected?.id}
+                  {#if updateLoading}
+                    <span class="loading loading-spinner"></span>
+                  {:else}
+                    <div>
+                      <button
+                        type="button"
+                        aria-label="save"
+                        onclick={() => onSaveChanges(feeding, { ...selected! })}
+                      >
+                        <span class="icon-[tabler--check] size-6"></span>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="save"
+                        onclick={() => (selected = undefined)}
+                      >
+                        <span class="icon-[tabler--x] size-6"></span>
+                      </button>
+                    </div>
+                  {/if}
+                {:else}
+                  <button
+                    type="button"
+                    aria-label="edit"
+                    onclick={() => (selected = { ...feeding })}
+                  >
+                    <span class="icon-[tabler--pencil] size-6"></span>
+                  </button>
+                {/if}
               </div>
               <p>
                 Start at {dayjs(feeding.start).format('h:mm a')}.
               </p>
               {#if feeding.end}
                 <p>End at {dayjs(feeding.end).format('h:mm a')}.</p>
+              {/if}
+              {#if feeding.id === selected?.id}
+                <RangeDateSlider {...feeding} onUpdate={onUpdateSelected} />
               {/if}
             </div>
             <hr />

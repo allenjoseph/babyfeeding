@@ -4,6 +4,10 @@ import type { IStaticMethods } from 'flyonui/flyonui';
 // for information about these interfaces
 declare global {
   interface Window {
+    // plugins
+    noUiSlider;
+    HSRangeSlider;
+
     // FlyonUI
     HSStaticMethods: IStaticMethods;
   }

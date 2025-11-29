@@ -45,6 +45,7 @@
   "dependencies": {
     "dayjs": "^1.11.19",
     "firebase": "^12.6.0",
-    "flyonui": "^2.4.1"
+    "flyonui": "^2.4.1",
+    "nouislider": "^15.8.1"
   }
 }
