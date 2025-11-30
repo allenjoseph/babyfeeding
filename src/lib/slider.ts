@@ -1,5 +1,9 @@
 import dayjs from 'dayjs';
-import type { target } from 'noUiSlider';
+import { type target } from 'noUiSlider';
+
+export type SliderTarget = target;
+export { PipsMode as SliderPipsMode } from 'noUiSlider';
+
 /**
  * @param slider HtmlElement with an initialized slider
  * @param threshold Minimum proximity (in percentages) to merge tooltips

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { PipsMode, type target } from 'noUiSlider';
-  import { formatSliderValue, mergeTooltips } from '$lib/slider';
+  import { formatSliderValue, mergeTooltips, SliderPipsMode, type SliderTarget } from '$lib/slider';
   import type { FeedingItem } from '$lib/types';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
@@ -11,7 +10,7 @@
     onUpdate = $bindable()
   }: FeedingItem & { onUpdate: (values: number[]) => void } = $props();
 
-  let rangeSlider: target;
+  let rangeSlider: SliderTarget;
 
   const rangeOptions = $derived({
     start: [dayjs(start).valueOf(), dayjs(end).valueOf()],
@@ -51,8 +50,8 @@
     rangeSlider.noUiSlider?.updateOptions(
       {
         pips: {
-          mode: PipsMode.Count,
-          values: 5,
+          mode: SliderPipsMode.Count,
+          values: 3,
           format: { to: formatSliderValue }
         },
         tooltips: { to: formatSliderValue }
@@ -66,6 +65,6 @@
 
 <div
   bind:this={rangeSlider}
-  class="mx-4 my-12"
+  class="my-12 mr-8 ml-4"
   data-range-slider={JSON.stringify(rangeOptions)}
 ></div>

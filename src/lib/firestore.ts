@@ -51,6 +51,7 @@ export async function addFeedingItem(item: FeedingItem) {
 
 export async function updateFeedingItem(item: FeedingItem) {
   const feedingDoc = {
+    start: Timestamp.fromDate(item.start),
     end: Timestamp.fromDate(item.end!),
     type: item.type,
     note: item.note ?? ''

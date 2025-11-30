@@ -64,7 +64,11 @@
   }
 
   async function onSaveChanges(current: FeedingItem, changes: FeedingItem) {
-    if (!changes || JSON.stringify(changes) === JSON.stringify(current)) return;
+    if (!changes || JSON.stringify(changes) === JSON.stringify(current)) {
+      selected = undefined;
+      return;
+    }
+
     updateLoading = true;
     await updateFeedingItem({ ...changes });
     await onRefreshFeedingdata();
@@ -203,7 +207,7 @@
               {#if feeding.end}
                 <p>End at {dayjs(feeding.end).format('h:mm a')}.</p>
               {/if}
-              {#if feeding.id === selected?.id}
+              {#if selected?.id === feeding.id}
                 <RangeDateSlider {...feeding} onUpdate={onUpdateSelected} />
               {/if}
             </div>
