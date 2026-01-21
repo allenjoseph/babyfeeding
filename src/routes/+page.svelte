@@ -91,10 +91,12 @@
     <span class="loading loading-xl loading-ring"></span>
   </p>
 {:else}
-  <div class="card my-8">
+  <div class="card my-8 dark:border dark:border-b-gray-600">
     <div class="relative card-body items-center gap-y-4">
       <InputFeedingType bind:group={feedingType} />
-      <p class="text-8xl font-medium tracking-tight text-gray-600 font-stretch-condensed">
+      <p
+        class="text-8xl font-medium tracking-tight text-gray-600 font-stretch-condensed dark:text-gray-300"
+      >
         {app.timer.format('HH:mm:ss')}
       </p>
       {#if app.timerId}
@@ -121,7 +123,12 @@
         onclick={onRefreshFeedingdata}
         disabled={refreshLoading}
       >
-        <span class={['icon-[tabler--refresh] size-6 shrink-0', refreshLoading && 'animate-spin']}>
+        <span
+          class={[
+            'icon-[tabler--refresh] size-6 shrink-0 dark:text-gray-300',
+            refreshLoading && 'animate-spin'
+          ]}
+        >
         </span>
       </button>
     </div>

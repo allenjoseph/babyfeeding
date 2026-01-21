@@ -19,7 +19,7 @@
 <main class="mx-auto max-w-xl p-4">
   <div class="flex items-center gap-4">
     <img src={asset('/logo.svg')} alt="logo" class="size-20" />
-    <h1 class="text-4xl text-base-content">Baby Feeding Tracker</h1>
+    <h1 class="text-4xl text-base-content">Baby Feeding</h1>
   </div>
   {@render children()}
 </main>
