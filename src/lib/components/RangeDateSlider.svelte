@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { formatSliderValue, mergeTooltips, SliderPipsMode, type SliderTarget } from '$lib/slider';
+  import {
+    formatSliderValue,
+    mergeTooltips,
+    SliderPipsMode,
+    type SliderTarget
+  } from '$lib/services/slider';
   import type { FeedingItem } from '$lib/types';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
@@ -21,22 +26,19 @@
     connect: true,
     tooltips: true,
     cssClasses: {
-      target:
-        'relative h-2 rounded-full bg-neutral/10 range-slider-disabled:pointer-events-none range-slider-disabled:opacity-50',
-      base: 'size-full relative z-1',
-      origin: 'absolute top-0 end-0 rtl:start-0 size-full origin-[0_0] rounded-full',
-      handle:
-        'absolute top-1/2 end-0 rtl:start-0 size-4 bg-base-100 border-[3px] border-primary rounded-full translate-x-2/4 -translate-y-2/4 hover:cursor-grab active:cursor-grabbing hover:ring-2 ring-primary active:ring-[3px]',
-      connects: 'relative z-0 w-full h-2 overflow-hidden',
-      connect: 'absolute top-0 end-0 rtl:start-0 z-1 size-full bg-primary origin-[0_0]',
-      touchArea: 'absolute -top-1 -bottom-1 -start-1 -end-1',
-      tooltip:
-        'bg-neutral text-sm text-neutral-content shadow-base-300/20 py-1 px-2 rounded-selector mb-3 absolute bottom-full start-2/4 -translate-x-2/4 rtl:translate-x-2/4 shadow-md text-nowrap',
-      pips: 'relative w-full h-7 mt-3',
-      value: 'absolute top-4 -translate-x-2/4 text-sm text-base-content/80 text-nowrap',
-      marker: 'absolute border-s border-base-content/25',
-      markerNormal: 'h-2',
-      markerLarge: 'h-4'
+      target: 'range-slider--target',
+      base: 'range-slider--base',
+      origin: 'range-slider--origin',
+      handle: 'range-slider--handle',
+      connects: 'range-slider--connects',
+      connect: 'range-slider--connect',
+      touchArea: 'range-slider--touch-area',
+      tooltip: 'range-slider--tooltip',
+      pips: 'range-slider--pips',
+      value: 'range-slider--value',
+      marker: 'range-slider--marker',
+      markerNormal: 'range-slider--marker-normal',
+      markerLarge: 'range-slider--marker-large'
     }
   });
 
@@ -68,3 +70,49 @@
   class="my-12 mr-8 ml-4"
   data-range-slider={JSON.stringify(rangeOptions)}
 ></div>
+
+<style>
+  @reference "../../app.css";
+
+  :global {
+    .range-slider--target {
+      @apply relative h-2 rounded-full bg-neutral/10 range-slider-disabled:pointer-events-none range-slider-disabled:opacity-50;
+    }
+    .range-slider--base {
+      @apply relative z-1 size-full;
+    }
+    .range-slider--origin {
+      @apply absolute end-0 top-0 size-full origin-top-left rounded-full rtl:start-0;
+    }
+    .range-slider--handle {
+      @apply absolute end-0 top-1/2 size-4 translate-x-2/4 -translate-y-2/4 rounded-full border-[3px] border-primary bg-base-100 ring-primary hover:cursor-grab hover:ring-2 active:cursor-grabbing active:ring-[3px] rtl:start-0;
+    }
+    .range-slider--connects {
+      @apply relative z-0 h-2 w-full overflow-hidden;
+    }
+    .range-slider--connect {
+      @apply absolute end-0 top-0 z-1 size-full origin-top-left bg-primary rtl:start-0;
+    }
+    .range-slider--touch-area {
+      @apply absolute -start-1 -end-1 -top-1 -bottom-1;
+    }
+    .range-slider--tooltip {
+      @apply absolute start-2/4 bottom-full mb-3 -translate-x-2/4 rounded-selector bg-neutral px-2 py-1 text-sm text-nowrap text-neutral-content shadow-md shadow-base-300/20 rtl:translate-x-2/4;
+    }
+    .range-slider--pips {
+      @apply relative mt-3 h-7 w-full;
+    }
+    .range-slider--value {
+      @apply absolute top-4 -translate-x-2/4 text-sm text-nowrap text-base-content/80;
+    }
+    .range-slider--marker {
+      @apply absolute border-s border-base-content/25;
+    }
+    .range-slider--marker-normal {
+      @apply h-2;
+    }
+    .range-slider--marker-large {
+      @apply h-4;
+    }
+  }
+</style>

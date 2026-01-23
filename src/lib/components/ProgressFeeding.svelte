@@ -9,7 +9,7 @@
 </script>
 
 <div class="my-2 flex items-center gap-x-1">
-  {#each Array(maxDailyFeedings) as _, i}
+  {#each Array(maxDailyFeedings), i (i)}
     <div
       class={[
         'progress-step',

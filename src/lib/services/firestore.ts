@@ -11,12 +11,12 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore';
-import { app } from './firebase';
-import { getUser } from './auth';
-import type { FeedingItem } from './types';
 import type { User } from 'firebase/auth';
+import { firebaseApp } from '$lib/firebase';
+import type { FeedingItem } from '$lib/types';
+import { getUser } from './auth';
 
-const firestore = getFirestore(app);
+const firestore = getFirestore(firebaseApp);
 const feedingCollection = collection(firestore, 'feeding');
 const userCollection = collection(firestore, 'users');
 

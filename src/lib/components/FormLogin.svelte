@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { signInWithGoogle } from '$lib/auth';
+  import { signInWithGoogle } from '$lib/services/auth';
 </script>
 
 <div class="flex items-center justify-center py-12">

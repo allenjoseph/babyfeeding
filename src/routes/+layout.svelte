@@ -2,7 +2,7 @@
   import { asset } from '$app/paths';
   import { afterNavigate } from '$app/navigation';
 
-  import './layout.css';
+  import '../app.css';
 
   let { children } = $props();
 
