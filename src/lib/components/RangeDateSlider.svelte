@@ -100,7 +100,7 @@
       @apply absolute start-2/4 bottom-full mb-3 -translate-x-2/4 rounded-selector bg-neutral px-2 py-1 text-sm text-nowrap text-neutral-content shadow-md shadow-base-300/20 rtl:translate-x-2/4;
     }
     .range-slider--pips {
-      @apply relative mt-3 h-7 w-full;
+      @apply relative -mt-2 h-7 w-full;
     }
     .range-slider--value {
       @apply absolute top-4 -translate-x-2/4 text-sm text-nowrap text-base-content/80;

@@ -45,6 +45,10 @@
     loading = false;
     selected = undefined;
   }
+
+  function formatTime(time: Date) {
+    return dayjs(time).format('h:mm a');
+  }
 </script>
 
 {#if !app.user}
@@ -107,11 +111,6 @@
                     <br />
                     <span class="text-xs text-gray-300">{feeding.id}</span>
                   </p>
-                  {#if feeding.id === selected?.id}
-                    <button class="btn btn-sm btn-error" onclick={onDelete} disabled={loading}>
-                      Delete
-                    </button>
-                  {/if}
                 </div>
                 {#if feeding.id === selected?.id}
                   {#if loading}
@@ -144,14 +143,24 @@
                   </button>
                 {/if}
               </div>
-              <p>
-                Start at {dayjs(feeding.start).format('h:mm a')}.
-              </p>
               {#if feeding.end}
-                <p>End at {dayjs(feeding.end).format('h:mm a')}.</p>
+                <p>
+                  From {formatTime(feeding.start)} to {formatTime(feeding.end)}.
+                </p>
+              {:else}
+                <p>
+                  Started at {formatTime(feeding.start)}.
+                </p>
               {/if}
               {#if selected?.id === feeding.id}
                 <RangeDateSlider {...feeding} onUpdate={onUpdateTimeFrame} />
+                <button
+                  class="btn relative left-1/2 -translate-x-1/2 btn-sm btn-error"
+                  onclick={onDelete}
+                  disabled={loading}
+                >
+                  Delete
+                </button>
               {/if}
             </div>
             <hr />

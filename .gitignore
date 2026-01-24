@@ -9,6 +9,7 @@ node_modules
 /build
 .firebase
 firestore-debug.log
+firebase-debug.log
 /coverage
 
 # OS
