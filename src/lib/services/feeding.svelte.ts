@@ -13,7 +13,7 @@ export async function startFeeding(feedingType: FeedingType) {
   await refreshFeedingdata();
 }
 
-export async function endCurrentFeeding(feedingType?: FeedingType) {
+export async function endFeeding(feedingType?: FeedingType) {
   if (!app.currentFeeding) return;
 
   await updateFeedingItem({

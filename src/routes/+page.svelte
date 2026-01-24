@@ -1,8 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { onMount } from 'svelte';
-  import { updateFeedingItem } from '$lib/services/firestore';
-  import { getUser, validateSignInResult } from '$lib/services/auth';
+  import { deleteFeedingItem, updateFeedingItem } from '$lib/services/firestore';
+  import { refreshFeedingdata } from '$lib/services/feeding.svelte';
   import { app } from '$lib/stores/state.svelte';
   import type { FeedingItem, FeedingType } from '$lib/types';
   import FormLogin from '$lib/components/FormLogin.svelte';
@@ -10,74 +9,46 @@
   import ButtonFeeding from '$lib/components/ButtonFeeding.svelte';
   import ProgressFeeding from '$lib/components/ProgressFeeding.svelte';
   import RangeDateSlider from '$lib/components/RangeDateSlider.svelte';
-  import {
-    endCurrentFeeding,
-    refreshFeedingdata,
-    startFeeding
-  } from '$lib/services/feeding.svelte';
   import ButtonRefresh from '$lib/components/ButtonRefresh.svelte';
 
-  let refreshLoading = $state(false);
-  let updateLoading = $state(false);
+  let loading = $state(false);
+  let selected = $state<FeedingItem>();
+
   let feedingType = $derived<FeedingType>(app.currentFeeding?.type ?? 'breastmilk');
   let feedingGroupByDay = $derived(
     Object.groupBy(app.feedingData ?? [], (i) => dayjs(i.start).format('YYYY-MM-DD'))
   );
-  let feedingLoading = $derived(app.feedingData === null);
-  let authLoading = $derived(app.user === null);
-  let selected = $state<FeedingItem>();
 
-  async function onStartFeeding() {
-    feedingLoading = true;
-    await startFeeding(feedingType);
-    feedingLoading = false;
-  }
-
-  async function onEndFeeding() {
-    feedingLoading = true;
-    await endCurrentFeeding(feedingType);
-    feedingLoading = false;
-  }
-
-  async function onRefreshFeedingdata() {
-    refreshLoading = true;
-    await refreshFeedingdata();
-    refreshLoading = false;
-  }
-
-  function onUpdateSelected([start, end]: number[]) {
+  function onUpdateTimeFrame([start, end]: number[]) {
     if (!selected) return;
     selected.start = dayjs(start).toDate();
     selected.end = dayjs(end).toDate();
   }
 
-  async function onSaveChanges(current: FeedingItem, changes: FeedingItem) {
+  async function onUpdate(current: FeedingItem, changes: FeedingItem) {
     if (!changes || JSON.stringify(changes) === JSON.stringify(current)) {
       selected = undefined;
       return;
     }
-
-    updateLoading = true;
-    await updateFeedingItem({ ...changes });
-    await onRefreshFeedingdata();
-    updateLoading = false;
-    selected = undefined;
+    await wrapRefreshData(updateFeedingItem({ ...changes }));
   }
 
-  onMount(async () => {
-    app.user = getUser() ?? (await validateSignInResult());
-    if (app.user) {
-      await refreshFeedingdata();
-    }
-  });
+  async function onDelete() {
+    if (!selected?.id) return;
+    await wrapRefreshData(deleteFeedingItem(selected.id));
+  }
+
+  async function wrapRefreshData(fn: Promise<void>) {
+    loading = true;
+    await fn;
+    await refreshFeedingdata();
+    loading = false;
+    selected = undefined;
+  }
 </script>
 
 {#if !app.user}
   <FormLogin />
-{:else if authLoading}
-  <p class="mt-4 text-center text-lg text-base-content">
-    <span class="loading loading-xl loading-ring"></span>
-  </p>
 {:else}
   <div class="card my-8 dark:border dark:border-b-gray-600">
     <div class="relative card-body items-center gap-y-4">
@@ -87,15 +58,11 @@
       >
         {app.timer.format('HH:mm:ss')}
       </p>
-      <ButtonFeeding
-        onclick={app.timerId ? onEndFeeding : onStartFeeding}
-        loading={!!app.feedingData && feedingLoading}
-        stop={!!app.timerId}
-      />
-      <ButtonRefresh onclick={onRefreshFeedingdata} loading={refreshLoading} />
+      <ButtonFeeding disabled={loading} />
+      <ButtonRefresh disabled={loading} />
     </div>
   </div>
-  {#if !app.feedingData && feedingLoading}
+  {#if !app.feedingData}
     <p class="text-center text-lg text-base-content">
       <span class="loading loading-xs loading-spinner"></span>
       Loading feeding items.
@@ -129,38 +96,45 @@
             </div>
             <div class="timeline-end m-3 ms-2 w-full rounded-lg">
               <div class="mb-2 flex pt-0.5 font-medium text-base-content">
-                <p class="flex-1 leading-4">
-                  {#if feeding.end}
-                    {dayjs(feeding.end).diff(feeding.start, 'minute')} minutes of {feeding.type}.
-                  {:else}
-                    <span class="text-primary italic">Ongoing feeding</span>
-                    <span class="loading loading-xs loading-dots text-primary"></span>
+                <div class="flex flex-1 gap-2">
+                  <p class="leading-4">
+                    {#if feeding.end}
+                      {dayjs(feeding.end).diff(feeding.start, 'minute')} minutes of {feeding.type}.
+                    {:else}
+                      <span class="text-primary italic">Ongoing feeding</span>
+                      <span class="loading loading-xs loading-dots text-primary"></span>
+                    {/if}
+                    <br />
+                    <span class="text-xs text-gray-300">{feeding.id}</span>
+                  </p>
+                  {#if feeding.id === selected?.id}
+                    <button class="btn btn-sm btn-error" onclick={onDelete} disabled={loading}>
+                      Delete
+                    </button>
                   {/if}
-                  <br />
-                  <span class="text-xs text-gray-300">{feeding.id}</span>
-                </p>
+                </div>
                 {#if feeding.id === selected?.id}
-                  {#if updateLoading}
+                  {#if loading}
                     <span class="loading loading-spinner"></span>
                   {:else}
                     <div>
                       <button
                         type="button"
                         aria-label="save"
-                        onclick={() => onSaveChanges(feeding, { ...selected! })}
+                        onclick={() => onUpdate(feeding, { ...selected! })}
                       >
                         <span class="icon-[tabler--check] size-6"></span>
                       </button>
                       <button
                         type="button"
-                        aria-label="save"
+                        aria-label="cancel"
                         onclick={() => (selected = undefined)}
                       >
                         <span class="icon-[tabler--x] size-6"></span>
                       </button>
                     </div>
                   {/if}
-                {:else}
+                {:else if feeding.end}
                   <button
                     type="button"
                     aria-label="edit"
@@ -177,7 +151,7 @@
                 <p>End at {dayjs(feeding.end).format('h:mm a')}.</p>
               {/if}
               {#if selected?.id === feeding.id}
-                <RangeDateSlider {...feeding} onUpdate={onUpdateSelected} />
+                <RangeDateSlider {...feeding} onUpdate={onUpdateTimeFrame} />
               {/if}
             </div>
             <hr />

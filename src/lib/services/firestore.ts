@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -58,6 +59,10 @@ export async function updateFeedingItem(item: FeedingItem) {
   };
 
   return updateDoc(doc(feedingCollection, item.id), feedingDoc);
+}
+
+export async function deleteFeedingItem(id: string) {
+  return deleteDoc(doc(feedingCollection, id));
 }
 
 export async function saveUser(user: Partial<User>) {
