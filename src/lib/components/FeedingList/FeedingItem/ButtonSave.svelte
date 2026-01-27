@@ -7,9 +7,9 @@
 
 <button
   type="button"
-  class="btn btn-text btn-sm"
+  class="btn btn-text btn-sm underline underline-offset-4 btn-success"
   aria-label="save"
   onclick={() => feedingState.onUpdate(feeding, { ...feedingState.selected! })}
 >
-  <span class="icon-[tabler--check] size-6"></span>
+  <span class="icon-[tabler--check] size-6"></span>Save
 </button>

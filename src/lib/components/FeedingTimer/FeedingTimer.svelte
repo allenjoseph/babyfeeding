@@ -9,13 +9,13 @@
   let type = $derived<feedingType>(app.currentFeeding?.type ?? 'breastmilk');
 </script>
 
-<div class="card my-8 dark:border dark:border-b-gray-600">
+<div class="card-border card my-8">
   <div class="relative card-body items-center gap-y-4">
     <div class="flex flex-col items-center gap-y-4">
       <FeedingType bind:group={type} />
+      <TimeDisplay />
       <ButtonStart {type} />
       <ButtonRefresh />
     </div>
-    <TimeDisplay />
   </div>
 </div>

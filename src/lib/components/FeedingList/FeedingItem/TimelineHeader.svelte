@@ -2,7 +2,6 @@
   import { feedingState } from '$lib/stores/feeding.svelte';
   import type { Feeding } from '$lib/types';
   import dayjs from 'dayjs';
-  import ButtonSave from './ButtonSave.svelte';
   import ButtonCancel from './ButtonCancel.svelte';
   import ButtonEdit from './ButtonEdit.svelte';
 
@@ -28,10 +27,7 @@
     {#if feedingState.loading}
       <span class="loading loading-spinner"></span>
     {:else}
-      <div>
-        <ButtonSave {feeding} />
-        <ButtonCancel />
-      </div>
+      <ButtonCancel />
     {/if}
   {:else if feeding.end}
     <ButtonEdit {feeding} />

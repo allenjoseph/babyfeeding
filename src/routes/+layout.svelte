@@ -32,9 +32,9 @@
 </svelte:head>
 
 <main class="mx-auto max-w-xl p-4">
-  <div class="flex items-center gap-4">
+  <div class="flex items-end gap-1">
     <img src={asset('/logo.svg')} alt="logo" class="size-20" />
-    <h1 class="text-4xl text-base-content">Baby Feeding</h1>
+    <h1 class="text-5xl text-base-content font-stretch-extra-condensed">Baby Feeding</h1>
   </div>
   {#if loading}
     <p class="mt-8 text-center text-base-content">

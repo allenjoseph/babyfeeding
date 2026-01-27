@@ -6,6 +6,7 @@
   import TimelineDot from './TimelineDot.svelte';
   import ButtonDelete from './ButtonDelete.svelte';
   import TimelineHeader from './TimelineHeader.svelte';
+  import ButtonSave from './ButtonSave.svelte';
 
   let { feeding }: { feeding: Feeding } = $props();
 
@@ -39,7 +40,10 @@
     {/if}
     {#if isSelected}
       <RangeSlider {...feeding} onUpdate={onUpdateTimeFrame} />
-      <ButtonDelete />
+      <div class="flex items-center justify-between">
+        <ButtonDelete />
+        <ButtonSave {feeding} />
+      </div>
     {/if}
   </div>
   <hr />
