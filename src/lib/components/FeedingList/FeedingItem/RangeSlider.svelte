@@ -5,7 +5,7 @@
     SliderPipsMode,
     type SliderTarget
   } from '$lib/services/slider';
-  import type { FeedingItem } from '$lib/types';
+  import type { Feeding } from '$lib/types';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
 
@@ -13,7 +13,7 @@
     start,
     end,
     onUpdate = $bindable()
-  }: FeedingItem & { onUpdate: (values: number[]) => void } = $props();
+  }: Feeding & { onUpdate: (values: number[]) => void } = $props();
 
   let rangeSlider: SliderTarget;
 
@@ -72,7 +72,7 @@
 ></div>
 
 <style>
-  @reference "../../app.css";
+  @reference "../../../../app.css";
 
   :global {
     .range-slider--target {

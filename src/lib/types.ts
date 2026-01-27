@@ -1,6 +1,6 @@
 import type { Dayjs } from 'dayjs';
 
-export type FeedingType = 'breastmilk' | 'formula' | 'solid';
+export type feedingType = 'breastmilk' | 'formula' | 'solid';
 
 export interface User {
   uid: string;
@@ -9,18 +9,18 @@ export interface User {
   photoURL: string | null;
 }
 
-export interface FeedingItem {
+export interface Feeding {
   id?: string;
   start: Date;
   end?: Date;
-  type: FeedingType;
+  type: feedingType;
   note?: string;
 }
 
 export interface AppState {
   user: User | null;
-  feedingData: FeedingItem[] | null;
-  currentFeeding: FeedingItem | null;
+  feedingData: Feeding[] | null;
+  currentFeeding: Feeding | null;
   timer: Dayjs;
   timerId?: NodeJS.Timeout;
 }

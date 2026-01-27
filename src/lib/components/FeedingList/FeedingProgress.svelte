@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { FeedingItem } from '$lib/types';
+  import type { Feeding } from '$lib/types';
 
-  let { feedingItems }: { feedingItems?: FeedingItem[] } = $props();
+  let { feedingItems }: { feedingItems?: Feeding[] } = $props();
 
   const reverseItems = $derived(feedingItems?.toReversed());
 
-  const maxDailyFeedings = 15;
+  const maxDailyFeedings = 10;
 </script>
 
 <div class="my-2 flex items-center gap-x-1">

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import dayjs from 'dayjs';
-import type { FeedingItem } from '$lib/types';
+import type { Feeding } from '$lib/types';
 
 const localStorageMock = {
   getItem: vi.fn(),
@@ -119,7 +119,7 @@ describe('state.svelte.ts', () => {
 
   describe('refreshFeedingdata', () => {
     it('should set feedingData when data is fetched', async () => {
-      const mockFeedingData: FeedingItem[] = [{ id: '1', start: new Date(), type: 'breastmilk' }];
+      const mockFeedingData: Feeding[] = [{ id: '1', start: new Date(), type: 'breastmilk' }];
 
       vi.mocked(queryFeedingItems).mockResolvedValue(mockFeedingData);
 
@@ -129,12 +129,12 @@ describe('state.svelte.ts', () => {
     });
 
     it('should set currentFeeding when feeding is in progress', async () => {
-      const inProgressFeeding: FeedingItem = {
+      const inProgressFeeding: Feeding = {
         id: '2',
         start: new Date(),
         type: 'formula'
       };
-      const completedFeeding: FeedingItem = {
+      const completedFeeding: Feeding = {
         id: '3',
         start: new Date(Date.now() - 3600000),
         end: new Date(),
@@ -153,7 +153,7 @@ describe('state.svelte.ts', () => {
     });
 
     it('should not set currentFeeding when all feedings are complete', async () => {
-      const completedFeeding: FeedingItem = {
+      const completedFeeding: Feeding = {
         id: '4',
         start: new Date(Date.now() - 3600000),
         end: new Date(),
@@ -168,7 +168,7 @@ describe('state.svelte.ts', () => {
     });
 
     it('should call startTimer when feeding is in progress', async () => {
-      const inProgressFeeding: FeedingItem = {
+      const inProgressFeeding: Feeding = {
         id: '5',
         start: new Date(),
         type: 'breastmilk'
@@ -191,7 +191,7 @@ describe('state.svelte.ts', () => {
     });
 
     it('should clear currentFeeding when no feeding in progress', async () => {
-      const completedFeeding: FeedingItem = {
+      const completedFeeding: Feeding = {
         id: '6',
         start: new Date(Date.now() - 7200000),
         end: new Date(Date.now() - 3600000),

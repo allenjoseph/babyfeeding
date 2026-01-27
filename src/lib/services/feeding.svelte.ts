@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import type { FeedingType } from '$lib/types';
+import type { feedingType } from '$lib/types';
 import { app } from '$lib/stores/state.svelte';
 import { addFeedingItem, queryFeedingItems, updateFeedingItem } from './firestore';
 
-export async function startFeeding(feedingType: FeedingType) {
+export async function startFeeding(feedingType: feedingType) {
   app.currentFeeding = await addFeedingItem({
     start: dayjs().toDate(),
     type: feedingType
@@ -13,7 +13,7 @@ export async function startFeeding(feedingType: FeedingType) {
   await refreshFeedingdata();
 }
 
-export async function endFeeding(feedingType?: FeedingType) {
+export async function endFeeding(feedingType?: feedingType) {
   if (!app.currentFeeding) return;
 
   await updateFeedingItem({

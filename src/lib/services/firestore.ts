@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
 import { firebaseApp } from '$lib/firebase';
-import type { FeedingItem } from '$lib/types';
+import type { Feeding } from '$lib/types';
 import { getUser } from './auth';
 
 const firestore = getFirestore(firebaseApp);
@@ -37,20 +37,20 @@ export async function queryFeedingItems(from: Date, to: Date) {
     data.start = (data.start as Timestamp).toDate();
     data.end = (data.end as Timestamp)?.toDate();
     return { id: item.id, ...data };
-  }) as FeedingItem[];
+  }) as Feeding[];
 }
 
-export async function addFeedingItem(item: FeedingItem) {
+export async function addFeedingItem(item: Feeding) {
   const feedingDoc = {
     ...item,
     start: Timestamp.fromDate(item.start),
     owner: getUser()?.uid
   };
 
-  return addDoc(feedingCollection, feedingDoc).then<FeedingItem>((i) => ({ id: i.id, ...item }));
+  return addDoc(feedingCollection, feedingDoc).then<Feeding>((i) => ({ id: i.id, ...item }));
 }
 
-export async function updateFeedingItem(item: FeedingItem) {
+export async function updateFeedingItem(item: Feeding) {
   const feedingDoc = {
     start: Timestamp.fromDate(item.start),
     end: Timestamp.fromDate(item.end!),

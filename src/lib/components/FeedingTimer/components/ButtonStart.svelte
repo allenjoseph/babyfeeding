@@ -1,22 +1,22 @@
 <script lang="ts">
   import { endFeeding, startFeeding } from '$lib/services/feeding.svelte';
   import { app } from '$lib/stores/state.svelte';
-  import type { FeedingType } from '$lib/types';
+  import { feedingState } from '$lib/stores/feeding.svelte';
+  import type { feedingType } from '$lib/types';
 
-  let { disabled = false } = $props();
+  let { type }: { type: feedingType } = $props();
 
   let loading = $state(false);
-  let feedingType = $derived<FeedingType>(app.currentFeeding?.type ?? 'breastmilk');
 
   async function onStartFeeding() {
     loading = true;
-    await startFeeding(feedingType);
+    await startFeeding(type);
     loading = false;
   }
 
   async function onEndFeeding() {
     loading = true;
-    await endFeeding(feedingType);
+    await endFeeding(type);
     loading = false;
   }
 </script>
@@ -24,7 +24,7 @@
 <button
   class={['btn btn-gradient', app.timerId ? 'btn-error' : 'btn-success']}
   onclick={app.timerId ? onEndFeeding : onStartFeeding}
-  disabled={disabled || loading}
+  disabled={feedingState.loading || loading}
 >
   {#if loading}
     <span class="loading loading-spinner"></span>
