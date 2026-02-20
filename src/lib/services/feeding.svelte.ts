@@ -48,9 +48,9 @@ async function fetchFeedingData() {
 
 export function startTimer(startDate: Date) {
   clearInterval(app.timerId);
-  app.timer = dayjs().startOf('day').add(dayjs().diff(startDate, 'second'), 'second');
+  app.timer = getTime(startDate);
   app.timerId = setInterval(() => {
-    app.timer = app.timer.add(1, 'second');
+    app.timer = getTime(startDate);
   }, 1000);
 }
 
@@ -58,4 +58,9 @@ export function resetTimer() {
   clearInterval(app.timerId);
   app.timer = dayjs().startOf('day');
   app.timerId = undefined;
+}
+
+function getTime(startDate: Date) {
+  const secondDiff = dayjs().diff(startDate, 'second');
+  return dayjs().startOf('day').add(secondDiff, 'second');
 }
